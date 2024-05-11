@@ -1,0 +1,21 @@
+# .gitignore
+
+# Django project files
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__/
+local_settings.py
+db.sqlite3
+
+# PostgreSQL database files
+*.pid
+postmaster.pid
+pg_xlog/
+postgresql.conf
+pg_hba.conf
+pg_ident.conf
+
+# Virtualenv files
+.env/
