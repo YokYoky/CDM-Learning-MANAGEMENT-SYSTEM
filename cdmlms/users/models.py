@@ -1,21 +1,50 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
 from courses.models import Course
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from courses.models import Program
 
 # Create your models here.
-BACHLOAR_DEGREE = "Bachloar"
+BACHELOR_DEGREE = "Bachelor"
 
 
 LEVEL = (
     # (LEVEL_COURSE, "Level course"),
-    (BACHLOAR_DEGREE, "Bachloar Degree"),
+    (BACHELOR_DEGREE, "Bachelor Degree"),
 )
 
+class CustomUserManager(UserManager):
+    def _create_user(self, email, password, **extra_fields):
+        email = self.normalize_email(email)
+        user = UserProfile(email=email, **extra_fields)
+        user.password = make_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", False)
+        extra_fields.setdefault("is_superuser", False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        assert extra_fields["is_staff"]
+        assert extra_fields["is_superuser"]
+        return self._create_user(email, password, **extra_fields)
+
 class UserProfile(AbstractUser):
+    USER_TYPE = (("1", "Instructor"), ("2", "Student"))
+    GENDER = [("M", "Male"), ("F", "Female")]
     email = models.EmailField(max_length=255, unique=True)
+    user_type = models.CharField(default="1", choices=USER_TYPE, max_length=1)
+    gender = models.CharField(max_length=1, choices=GENDER, default="")
     address = models.CharField(max_length=255)
     phoneNumber = models.CharField(max_length=255)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
@@ -26,7 +55,7 @@ class Student(models.Model):
     section = models.CharField(max_length=10)
     coursesEnrolled = models.ManyToManyField(Course)
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
-    program = models.OneToOneField(Program, on_delete=models.CASCADE, null=True, default=None)
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, default=None)
 
     def __str__(self):
         return self.user.username

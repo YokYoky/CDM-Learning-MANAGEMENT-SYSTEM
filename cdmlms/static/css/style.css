@@ -1,0 +1,62 @@
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+}
+}
+.footer {
+    background-color:#044721;
+}
+
+
+
+.height {
+    padding: 4rem; /* Adjust padding as needed for spacing around the content */
+    margin-top: 100px; /* Add top margin to push the card content down */
+}
+
+.card {
+    /*background-color: white; /* Override default background color */
+    border-radius: 1rem;
+    top: 25px;
+    backdrop-filter: 1rem;
+    box-shadow: 1.3rem 1.3rem 1.3rem rgba(0,0,0,0.5);
+}
+
+.cb1 {
+    background-color: rgba(0,0,0,0.5);
+    margin-top: 15px;
+}
+
+
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/cdm.png');
+    background-size: cover;
+    background-position: center;
+    /* Create a semi-transparent overlay for blur effect */
+    background-color: rgba(4, 71, 33, 0.8); /* Adjust the opacity (last value) for desired blur effect */
+    z-index: -1; /* Ensure the background is behind other content */
+}
+
+.logo {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 175px;
+    height: auto;
+}
