@@ -3,8 +3,8 @@ from .models import UserProfile, Student, Professor
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'address', 'phoneNumber']
-    search_fields = ['username', 'email', 'address', 'phoneNumber']
+    list_display = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
+    search_fields = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ['user', 'studentId', 'program', 'section', 'display_courses_enrolled', 'level']
@@ -25,6 +25,6 @@ class ProfessorAdmin(admin.ModelAdmin):
         return ", ".join([course.courseName for course in obj.coursesTaught.all()])
     display_courses_taught.short_description = 'Courses Taught'
 
-admin.site.register(UserProfile)
+admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Professor)
+admin.site.register(Professor, ProfessorAdmin)
