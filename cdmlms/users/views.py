@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.http import HttpResponse, JsonResponse
 from .EmailBackend import EmailBackend
-from django.contrib.auth import login as auth_login
 from .models import UserProfile
 
 
@@ -15,27 +14,28 @@ def login_page(request):
         elif request.user.user_type == '2':
             return redirect(reverse("student_dashboard"))
         else:
-            return redirect(reverse("student_home"))
+            return redirect(reverse("users:student_dashboard"))
     return render(request, 'authentication/login.html')
 
 
-def login(request, **kwargs):      
-    if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = EmailBackend.authenticate(request, username=email, password=password)
-        if user is not None:
-            auth_login(request, user)
+def dologin(request, **kwargs):      
+    if request.method != 'POST':
+        return HttpResponse("<h4>Denied</h4>")
+    else:
+        user = EmailBackend.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
+        if user != None:
+            login(request, user)
             if user.user_type == '1':
                 return redirect(reverse("users:student_dashboard"))
             elif user.user_type == '2':
-                return redirect(reverse("student_home"))
+                return redirect(reverse("users:student_dashboard"))
         else:
             messages.error(request, "Invalid details")
-            return redirect("/login/")
-    else:
-        return render(request, 'authentication/login.html')
-
+            return redirect("/")
+        
+def logout_view(request):
+    logout(request)
+    return redirect('users:login_page')
 
 def student_dashboard(request):
     return render(request, 'core/student_dashboard.html')

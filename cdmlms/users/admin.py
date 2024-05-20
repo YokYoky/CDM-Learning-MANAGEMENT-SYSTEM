@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import UserProfile, Student, Professor
 
 # Register your models here.
-class UserProfileAdmin(admin.ModelAdmin):
+class UserProfileAdmin(UserAdmin):
     list_display = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
     search_fields = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
 
