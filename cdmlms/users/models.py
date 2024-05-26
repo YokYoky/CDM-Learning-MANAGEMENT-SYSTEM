@@ -42,6 +42,8 @@ class CustomUserManager(UserManager):
 class UserProfile(AbstractUser):
     USER_TYPE = (("1", "Instructor"), ("2", "Student"))
     GENDER = [("M", "Male"), ("F", "Female")]
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     email = models.EmailField(max_length=255, unique=True)
     user_type = models.CharField(default="1", choices=USER_TYPE, max_length=1)
     gender = models.CharField(max_length=1, choices=GENDER, default="")
@@ -51,6 +53,9 @@ class UserProfile(AbstractUser):
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     def __str__(self):
         return self.username
     
@@ -58,7 +63,7 @@ class Student(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     studentId = models.IntegerField()
     section = models.CharField(max_length=10)
-    coursesEnrolled = models.ManyToManyField(Course)
+    coursesEnrolled = models.ManyToManyField(Course, related_name='enrolled_students')
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, default=None)
 
@@ -70,6 +75,9 @@ class Professor(models.Model):
     professorId = models.IntegerField()
     coursesTaught = models.ManyToManyField(Course, related_name='professors')
 
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
     def __str__(self):
         return self.user.username
         

@@ -3,9 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from .models import UserProfile, Student, Professor
 
 # Register your models here.
-class UserProfileAdmin(UserAdmin):
-    list_display = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
-    search_fields = ['username', 'user_type', 'email', 'gender', 'address', 'phoneNumber']
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ['username', 'user_type', 'first_name', 'last_name', 'email', 'gender', 'address', 'phoneNumber']
+    search_fields = ['username', 'user_type', 'first_name', 'last_name', 'email', 'gender', 'address', 'phoneNumber']
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ['user', 'studentId', 'program', 'section', 'display_courses_enrolled', 'level']

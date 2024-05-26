@@ -89,7 +89,10 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'users.UserProfile'
-AUTHENTICATION_BACKENDS = ['users.EmailBackend.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.EmailBackend.EmailBackend'
+]
 
 
 # Password validation
@@ -131,6 +134,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
