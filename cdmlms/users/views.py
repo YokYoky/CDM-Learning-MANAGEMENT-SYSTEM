@@ -3,16 +3,25 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.http import HttpResponse, JsonResponse
 from .EmailBackend import EmailBackend
-from .models import UserProfile
+from django.contrib.auth import get_backends
+from .models import UserProfile, Student, Course, Professor
+from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
+@login_required
+def base_view(request):
+    user_name = request.user.get_full_name() or request.user.username
+    context = {'user_name': user_name}
+    return render(request, 'base.html', context)
+
 def login_page(request):
     if request.user.is_authenticated:
         if request.user.user_type == '1':
-            return redirect(reverse("users:student_dashboard"))
+            return redirect(reverse("users:instructor_dashboard"))
         elif request.user.user_type == '2':
-            return redirect(reverse("student_dashboard"))
+            return redirect(reverse("users:student_dashboard"))
         else:
             return redirect(reverse("users:student_dashboard"))
     return render(request, 'authentication/login.html')
@@ -24,9 +33,13 @@ def dologin(request, **kwargs):
     else:
         user = EmailBackend.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
         if user != None:
+            for backend in get_backends():
+                if isinstance(backend, EmailBackend):
+                    user.backend = backend.__module__ + '.' + backend.__class__.__name__
+                    break
             login(request, user)
             if user.user_type == '1':
-                return redirect(reverse("users:student_dashboard"))
+                return redirect(reverse("users:instructor_dashboard"))
             elif user.user_type == '2':
                 return redirect(reverse("users:student_dashboard"))
         else:
@@ -38,8 +51,43 @@ def logout_view(request):
     return redirect('users:login_page')
 
 def student_dashboard(request):
-    return render(request, 'core/student_dashboard.html')
+    if not request.user.is_authenticated:
+        return redirect('users:login_page')
+
+    # Get the currently logged-in student
+    student = Student.objects.get(user=request.user)
+
+    # Get the total number of courses enrolled by the student
+    total_subject = student.coursesEnrolled.count()
+
+    user_name = f"{request.user.first_name} {request.user.last_name}"
+    print(f"User Name: {user_name}")
+    context = {
+        'total_subject': total_subject,
+        'user_name': user_name  # Pass the user's full name to the template
+    }
+
+    return render(request, 'core/student_dashboard.html', context)  # Pass the context to the template
     
+def instructor_dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('users:login_page')
+
+    # Get the currently logged-in instructor
+    instructor = Professor.objects.get(user=request.user)
+
+    # Get the courses taught by the instructor
+    courses_taught = instructor.coursesTaught.count()
+
+
+    user_name = f"{request.user.first_name} {request.user.last_name}"
+    context = {
+        'courses_taught': courses_taught,
+        'user_name': user_name  # Pass the user's full name to the template
+    }
+
+    return render(request, 'core/instructor_dashboard.html', context)  # Pass the context to the template
+
 def user_list(request):
     # Retrieve all UserProfile instances
     users = UserProfile.objects.all()
