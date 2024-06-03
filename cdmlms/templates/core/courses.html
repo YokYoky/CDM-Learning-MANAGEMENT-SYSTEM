@@ -30,7 +30,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Enrolled Courses:</h6>
                 {% for course in courses %}
-                    <a class="collapse-item" href="#">{{ course.courseName }}</a>
+                    <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
                 {% endfor %}
             </div>
         </div>
