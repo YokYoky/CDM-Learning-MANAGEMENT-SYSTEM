@@ -8,6 +8,34 @@
     <title>{% block title %}Student Dashboard{% endblock %}</title>
 </head>
 <body>
+
+    {% block navbar %}
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% if user_name %}
+            {{ user_name }}
+        {% else %}
+            No Name Found
+        {% endif %}</span>
+    {% endblock %}
+
+    {% block sidebar %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Courses</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Enrolled Courses:</h6>
+                {% for course in courses_enrolled %}
+                    <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+    {% endblock %}
+
     {% block content %}
     <div class="container-fluid">
         <!-- Content Row -->
@@ -23,38 +51,19 @@
                                     No. of subjects enrolled
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ total_subject }}
+                                        {{ total_subject }}
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                <a href="{% url 'users:courses' %}">
+                                    <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-
-            <!-- Pending Requests Card Example -->
-            <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    No. of due dates</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     {% endblock %}
-
 </body>
 </html>

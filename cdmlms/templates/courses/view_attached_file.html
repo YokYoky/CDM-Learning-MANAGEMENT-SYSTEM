@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">{{ assignment.title }}</h2>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Attached Files</h5>
+            <ul class="list-group">
+              {% for submission in submissions %}
+                <li class="list-group-item">
+                  <span style="color: black">{{ submission.student.user.username }} - {{ submission.file.name }}</span>
+                  <a href="{% url 'users:download_submission_file' submission.id %}" class="btn btn-primary">Download File</a>
+                </li>
+              {% empty %}
+                <li class="list-group-item">No submissions available.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,71 @@
+<!-- view_submissions.html -->
+{% extends "base.html" %}
+
+{% block navbar %}
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% if user_name %}
+            {{ user_name }}
+        {% else %}
+            No Name Found
+        {% endif %}</span>
+{% endblock %}
+
+{% block sidebar %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Courses</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Enrolled Courses:</h6>
+                {% for course in courses %}
+                    <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+    {% endblock %}
+    
+    {% block content %}
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">File Submissions</h2>
+              <a href="{% url 'users:courses' %}" class="btn btn-secondary">Back to Courses</a>
+            </div>
+            <div class="card-body">
+              <ul class="list-group">
+                {% for submission in submissions %}
+                  <li class="list-group-item">
+                    <span style="color: black">{{ submission.student.user.username }} ({{ submission.student.user.first_name }} {{ submission.student.user.last_name }}) - {{ submission.file.name }}</span>
+                    <a href="{% url 'users:download_submission_file' submission.id %}" class="btn btn-primary">Download File</a>
+                    {% if request.user.user_type == "1" %}  <!-- Professor -->
+                      <form action="" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        {{ comment_form }}
+                        <input type="hidden" name="submission_id" value="{{ submission.id }}" class="form-control form-control-sm">
+                        <button type="submit" class="btn btn-success">Grade</button>
+                      </form>
+                    {% endif %}
+                    {% if submission.grade %}
+                      <span style="color: green">Grade: {{ submission.grade }}</span>
+                    {% endif %}
+                    {% if submission.comment %}
+                      <p><strong>Comment:</strong> {{ submission.comment }}</p>
+                    {% endif %}
+                  </li>
+                {% empty %}
+                  <li class="list-group-item">No submissions available.</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
