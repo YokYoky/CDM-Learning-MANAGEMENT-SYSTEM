@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from courses.models import Course
 from django.contrib.auth.models import AbstractUser, UserManager
-from courses.models import Program
+from courses.models import Program, Assignment
 
 # Create your models here.
 BACHELOR_DEGREE = "Bachelor"
@@ -20,7 +20,7 @@ class CustomUserManager(UserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         if password:
-            user.set_password(password)
+            user.set_password(password)  # Use set_password to hash the password
         user.save(using=self._db)
         return user
 
@@ -66,6 +66,7 @@ class Student(models.Model):
     coursesEnrolled = models.ManyToManyField(Course, related_name='enrolled_students')
     level = models.CharField(max_length=25, choices=LEVEL, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE, null=True, default=None)
+    #submitted_assignments = models.ManyToManyField(Assignment, related_name='submitted_by')
 
     def __str__(self):
         return self.user.username

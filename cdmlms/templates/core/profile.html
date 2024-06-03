@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}
+<div class="sidebar-heading">
+    {% if user_name %}
+        {% if user.user_type == '1' %}
+            Professor
+        {% elif user.user_type == '2' %}
+            Student
+        {% endif %}
+    {% else %}
+        No Name Found
+    {% endif %}
+</div>
+<li class="nav-item">
+    <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+        aria-expanded="true" aria-controls="collapsePages">
+        <i class="fas fa-fw fa-folder"></i>
+        <span>Courses</span>
+    </a>
+    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Enrolled Courses:</h6>
+            {% for course in courses_taught %}
+                <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</li>
+{% endblock %}
+
+
+{% block content %}
+  <div class="container">
+    <h1>Profile</h1>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Personal Information</h2>
+        <ul>
+          <li><strong>Full Name:</strong> {{ user.get_full_name }}</li>
+          <li><strong>Email:</strong> {{ user.email }}</li>
+          <li><strong>Gender:</strong> {{ user.get_gender_display }}</li>
+          <li><strong>Address:</strong> {{ user.address }}</li>
+          <li><strong>Phone Number:</strong> {{ user.phoneNumber }}</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Account Information</h2>
+        <ul>
+          <li><strong>User Type:</strong> {{ user.get_user_type_display }}</li>
+          <li><strong>Username:</strong> {{ user.username }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

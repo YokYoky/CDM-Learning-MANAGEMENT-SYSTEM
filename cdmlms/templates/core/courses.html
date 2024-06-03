@@ -1,0 +1,81 @@
+{% extends 'core/student_dashboard.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Subjects{% endblock %}</title>
+</head>
+<body>
+
+    {% block navbar %}
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% if user_name %}
+            {{ user_name }}
+        {% else %}
+            No Name Found
+        {% endif %}</span>
+    {% endblock %}
+
+    {% block sidebar %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Courses</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Enrolled Courses:</h6>
+                {% for course in courses %}
+                    <a class="collapse-item" href="#">{{ course.courseName }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+    {% endblock %}
+    
+    {% block content %}
+    <div class="container-fluid">
+        <!-- Content Row -->
+        <div class="row align-items-center">
+            {% for course in courses %}
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        {{ course.courseName }}
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        Description: {{ course.courseDescription }}
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        Code: {{ course.courseCode }}
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        Units: {{ course.units }}
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        Instructor: {{ course.instructor }}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="{% url 'users:course_assignments' course.id %}">
+                                        <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

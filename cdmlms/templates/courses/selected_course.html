@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ course.courseName }}</h1>
+  <p>{{ course.courseDescription }}</p>
+  <a href="{% url 'users:course_assignments' course.id %}">View Assignments</a>
+{% endblock %}

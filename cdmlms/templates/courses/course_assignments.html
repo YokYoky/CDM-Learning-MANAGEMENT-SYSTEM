@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+
+{% block navbar %}
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% if user_name %}
+            {{ user_name }}
+        {% else %}
+            No Name Found
+        {% endif %}</span>
+{% endblock %}
+
+{% block sidebar %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Courses</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Enrolled Courses:</h6>
+                {% for course in courses %}
+                    <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+    {% endblock %}
+
+    {% block content %}
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">{{ course.courseName }}</h2>
+              <a href="#" onclick="history.back()" class="btn btn-secondary">Back</a>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Assignments</h5>
+              <ul class="list-group">
+                {% for assignment in assignments %}
+                  <li class="list-group-item">
+                    <span style="color: black">{{ assignment.title }}</span>
+                    <p class="card-text">{{ assignment.description }}</p>
+                    <a href="{% url 'users:download_file' assignment.id %}" class="btn btn-primary">Download File</a>
+                    <a href="{% url 'users:view_submission_file' assignment.id %}" class="btn btn-success">View</a>
+                    {% if request.user.user_type == '1' %}
+                      <button type="button" class="btn btn-danger mt-3" data-toggle="modal" data-target="#deleteAssignmentModal-{{ assignment.id }}">Delete Assignment</button>
+                      <a href="{% url 'users:update_assignment' assignment.id %}" class="btn btn-warning mt-3">Update Assignment</a>
+                      <!-- Modal -->
+                      <div class="modal fade" id="deleteAssignmentModal-{{ assignment.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteAssignmentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteAssignmentModalLabel">Delete Assignment: {{ assignment.title }}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to delete this assignment?
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                              <form method="post" action="{% url 'users:delete_assignment' course.id assignment.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if request.user.user_type == '2' %}
+                    <button type="button" class="btn btn-success mt-3" data-toggle="modal" data-target="#submitAssignmentModal-{{ assignment.id }}">Submit Assignment</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="submitAssignmentModal-{{ assignment.id }}" tabindex="-1" role="dialog" aria-labelledby="submitAssignmentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="submitAssignmentModalLabel">Submit Assignment: {{ assignment.title }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'users:submit_assignment' assignment.id %}">
+                                      {% csrf_token %}
+                                      <input type="file" name="file">
+                                      <button type="submit" class="btn btn-success">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                  </li>
+                {% empty %}
+                  <li class="list-group-item">No assignments available.</li>
+                {% endfor %}
+              </ul>
+              {% if request.user.user_type == '1' %}
+                <a href="{% url 'users:create_assignment' course.id %}" class="btn btn-success mt-3">Create Assignment</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock %}

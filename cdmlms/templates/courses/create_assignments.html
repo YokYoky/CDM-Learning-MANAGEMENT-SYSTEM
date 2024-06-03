@@ -1,0 +1,51 @@
+<!-- create_assignment.html -->
+{% extends "base.html" %}
+
+{% block navbar %}
+    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% if user_name %}
+            {{ user_name }}
+        {% else %}
+            No Name Found
+        {% endif %}</span>
+{% endblock %}
+
+{% block sidebar %}
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Courses</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Enrolled Courses:</h6>
+                {% for course in courses %}
+                    <a class="collapse-item" href="{% url 'users:course_assignments' course.id %}">{{ course.courseName }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </li>
+    {% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Create Assignment</h2>
+                    <a href="#" onclick="history.back()" class="btn btn-secondary">Back</a>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
