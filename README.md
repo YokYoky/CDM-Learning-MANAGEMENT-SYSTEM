@@ -52,3 +52,15 @@ Run the app
 ``` python
 python manage.py runserver
 ```
+
+# Output Images
+**Login page**
+![login](image/login.png)
+
+**Dashboard**
+![dashboard](image/dashboard.png)
+
+**Courses**
+![courses](image/courses.png)
+![student](image/sample.png)
+![instructor](image/sampleinstructor.png)
